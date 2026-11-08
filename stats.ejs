@@ -1,0 +1,5 @@
+<%- include('partials/head', { title: 'Στατιστικά επιτυχίας προγνωστικών | ' + NAME, desc: 'Πλήρες, επαληθευμένο ιστορικό των προγνωστικών μας: ποσοστό επιτυχίας συνολικά και ανά αγορά.', path: '/stats' }) %>
+<h1>Στατιστικά επιτυχίας</h1><p class="note">Κάθε βασικό προγνωστικό καταγράφεται πριν τον αγώνα και ελέγχεται αυτόματα μετά το τέλος του (αποτέλεσμα 90 λεπτών). Δεν αλλάζει μετά την έναρξη.</p>
+<%- include('partials/stats', { st }) %>
+<section class="panel"><h2>Τελευταία ολοκληρωμένα</h2><div class="scroll"><table><thead><tr><th>Αγώνας</th><th>Επιλογή</th><th>Πιθ.</th><th></th></tr></thead><tbody><% rows.forEach(x => { %><tr><td><a href="/predictions/<%= x.slug %>"><%= x.home_name %> - <%= x.away_name %></a></td><td><%= x.label %></td><td><%= x.pct %>%</td><td class="<%= x.result === 'win' ? 'win' : 'loss' %>"><%= x.result === 'win' ? 'Επιτυχία' : 'Αποτυχία' %></td></tr><% }) %><% if (!rows.length) { %><tr><td colspan="4">Δεν έχει ολοκληρωθεί ακόμη κάποιο προγνωστικό.</td></tr><% } %></tbody></table></div></section>
+<%- include('partials/foot') %>

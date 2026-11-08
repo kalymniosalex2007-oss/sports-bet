@@ -1,0 +1,16 @@
+<%- include('partials/head', { title: `Προγνωστικά ποδοσφαίρου ${fmtDay(date)} | ${NAME}`, desc: `Αναλυτικά προγνωστικά για τους ${total} αγώνες της ${fmtDay(date)}: φόρμα, απουσίες, στατιστικά και πρόταση ανά αγώνα.`, path: date === today ? '/' : '/?date=' + date }) %>
+<nav class="days" aria-label="Επιλογή ημέρας">
+<% days.forEach(d => { %><a href="/?date=<%= d %>" class="<%= d === date ? 'on' : '' %>"><b><%= fmtDay(d, { weekday: 'short' }) %></b><span><%= fmtDay(d, { day: 'numeric', month: 'short' }) %></span><% if (d === today) { %><i>Σήμερα</i><% } %></a><% }) %>
+<form method="get"><label>Άλλη ημερομηνία <input type="date" name="date" value="<%= date %>" onchange="this.form.submit()"></label></form></nav>
+<h1><%= date === today ? 'Σημερινά προγνωστικά' : 'Προγνωστικά ' + fmtDay(date) %></h1>
+<% if (picks.length) { %><section class="picks"><h2>Οι ισχυρότερες επιλογές της ημέρας</h2><div class="grid3">
+<% picks.forEach(m => { %><a class="pick" href="/predictions/<%= m.slug %>"><small><%= fmtTime(m.kickoff_ts) %> · <%= m.league_name %></small><strong><%= m.home_name %> - <%= m.away_name %></strong><span class="sel"><%= m.prediction.label %></span><em><%= m.prediction.pct %>% · εμπιστοσύνη <%= m.prediction.confidence.toLowerCase() %></em></a><% }) %></div></section><% } %>
+<% if (!groups.length) { %><p class="empty">Δεν υπάρχουν αγώνες στα πρωταθλήματα που καλύπτουμε για αυτή την ημέρα. Δοκίμασε άλλη ημερομηνία.</p><% } %>
+<% groups.forEach(g => { %><section class="league"><h2><img src="<%= g.logo %>" alt="" width="22" height="22" loading="lazy"><%= g.name %> <small><%= g.country %></small></h2>
+<% g.items.forEach(m => { const p = m.prediction, ok = evalPick(p, m); %>
+<article class="card"><div class="when"><b><%= fmtTime(m.kickoff_ts) %></b><small class="<%= ['1H','2H','HT','ET','P','LIVE'].includes(m.status) ? 'live' : '' %>"><%= statusLabel(m.status) %></small></div>
+<div class="teams"><div><img src="<%= m.home_logo %>" alt="" width="28" height="28" loading="lazy"><%= m.home_name %><% if (m.goals_home !== null) { %><b class="sc"><%= m.goals_home %></b><% } %></div><div><img src="<%= m.away_logo %>" alt="" width="28" height="28" loading="lazy"><%= m.away_name %><% if (m.goals_away !== null) { %><b class="sc"><%= m.goals_away %></b><% } %></div></div>
+<div class="sum"><% if (p && p.status === 'ok') { %><span class="chip"><%= p.label %> · <%= p.pct %>%</span><small><%= p.reasons[0] %></small><% if (ok !== null) { %><em class="<%= ok ? 'win' : 'loss' %>"><%= ok ? 'Επιτυχία' : 'Αποτυχία' %></em><% } %>
+<% } else if (p) { %><small><%= p.note %></small><% } else { %><small>Η ανάλυση δεν έχει δημιουργηθεί ακόμη.</small><% } %></div>
+<a class="btn" href="/predictions/<%= m.slug %>">ΑΝΑΛΥΣΗ ΑΓΩΝΑ</a></article><% }) %></section><% }) %>
+<%- include('partials/foot') %>

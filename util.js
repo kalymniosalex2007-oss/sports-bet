@@ -1,0 +1,11 @@
+const TZ = 'Europe/Athens';
+export const athensDate = (d = new Date()) => new Intl.DateTimeFormat('en-CA', { timeZone: TZ, year: 'numeric', month: '2-digit', day: '2-digit' }).format(d);
+export const addDays = (iso, n) => { const d = new Date(iso + 'T12:00:00Z'); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); };
+export const fmtTime = ts => new Intl.DateTimeFormat('el-GR', { timeZone: TZ, hour: '2-digit', minute: '2-digit', hour12: false }).format(new Date(ts * 1000));
+export const fmtDay = (iso, o = { weekday: 'long', day: 'numeric', month: 'long' }) => new Intl.DateTimeFormat('el-GR', { timeZone: 'UTC', ...o }).format(new Date(iso + 'T12:00:00Z'));
+export const slugify = s => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/&/g, ' and ').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+export const FINISHED = ['FT', 'AET', 'PEN', 'CANC', 'PST', 'ABD', 'AWD', 'WO'];
+const L = { NS: 'Προσεχώς', TBD: 'Η ώρα δεν έχει οριστεί', '1H': 'Ζωντανά', '2H': 'Ζωντανά', HT: 'Ημίχρονο', ET: 'Παράταση', P: 'Πέναλτι', LIVE: 'Ζωντανά', FT: 'Τελικό', AET: 'Τελικό (παρ.)', PEN: 'Τελικό (πέν.)', PST: 'Αναβλήθηκε', CANC: 'Ακυρώθηκε', SUSP: 'Διακόπηκε', ABD: 'Εγκαταλείφθηκε' };
+export const statusLabel = s => L[s] || s || '';
+export const num = v => { const n = parseFloat(String(v ?? '').replace('%', '')); return Number.isFinite(n) ? n : null; };
+export const fmtDT = ts => ts ? new Intl.DateTimeFormat('el-GR', { timeZone: TZ, day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false }).format(new Date(ts * 1000)) : '—';
